@@ -1,4 +1,5 @@
 package org.dataStructure.stack;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,6 +55,59 @@ public class TreeNodeExample {
 		return count;
 	}
 
+	/**
+	 * 求二叉树的深度（高度） 递归解法（O(N)）
+	 * 
+	 * （1）如果二叉树为空，二叉树的深度为0 （2）如果二叉树不为空，二叉树的深度 = max(左子树深度， 右子树深度) + 1
+	 * 
+	 * @param root
+	 * @return
+	 */
+	public int GetDepthRec(BinaryTreeNode root) {
+		if (root == null) {
+			return 0;
+		}
+		int leftDepth = GetDepthRec(root.m_pLeft);
+		int rightDepth = GetDepthRec(root.m_pRight);
+		return Math.max(leftDepth, rightDepth) + 1;
+	}
+
+	/**
+	 * 求二叉树的深度（高度） 迭代解法（O(N)） 用一个Queue存储结点，根节点入队列，然后出队列的时候，把该结点的左右结点入队列，
+	 * 用一个变量记录当前层的结点，另一个变量记录下一层的结点。当前层变量为0的时候，表示当前层全部出队列。
+	 * 
+	 * @param root
+	 * @return
+	 */
+	public int GetDepth(BinaryTreeNode root) {
+		if (root == null) {
+			return 0;
+		}
+		Queue<BinaryTreeNode> treeNodeQueue = new LinkedList<BinaryTreeNode>();
+		int depth = 0;
+		int currentLevelNode = 1;// 当前层结点数，root为1个
+		int nextLevelNode = 0;
+		treeNodeQueue.add(root);
+		while (!treeNodeQueue.isEmpty()) {
+			BinaryTreeNode treeNode = treeNodeQueue.remove();
+			currentLevelNode--;
+			if (treeNode.m_pLeft != null) {
+				treeNodeQueue.add(treeNode.m_pLeft);
+				nextLevelNode++;
+			}
+			if (treeNode.m_pRight != null) {
+				treeNodeQueue.add(treeNode.m_pRight);
+				nextLevelNode++;
+			}
+			if (currentLevelNode == 0) {
+				depth++;
+				currentLevelNode = nextLevelNode;
+				nextLevelNode = 0;
+			}
+		}
+		return depth;
+	}
+
 	@Test
 	public void testNode() throws Exception {
 		BinaryTreeNode treeNode12 = new BinaryTreeNode(12, null, null);
@@ -72,6 +126,8 @@ public class TreeNodeExample {
 
 		System.out.println(GetNodeNumRec(treeNode0));// 13
 		System.out.println(GetNodeNum(treeNode0));// 13
+		System.out.println(GetDepthRec(treeNode0));// 4
+		System.out.println(GetDepth(treeNode0));// 4
 
 	}
 
