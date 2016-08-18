@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
 
 import org.junit.Test;
 
@@ -108,6 +109,87 @@ public class TreeNodeExample {
 		return depth;
 	}
 
+	/**
+	 * 前序遍历 递归解法
+	 * 
+	 * （1）如果二叉树为空，空操作 （2）如果二叉树不为空，访问根节点，前序遍历左子树，前序遍历右子树
+	 */
+	public void PreorderTraversalRec(BinaryTreeNode root) {
+		if (root == null)
+			return;
+		System.out.println(root.m_nValue);
+		PreorderTraversalRec(root.m_pLeft);
+		PreorderTraversalRec(root.m_pRight);
+	}
+
+	/**
+	 * 前序遍历 迭代解法
+	 * 
+	 * 使用Stack模拟
+	 * 
+	 * 关键点：入栈的时候，要先压入右孩子，然后压入左孩子，这样出栈的时候才是左孩子在前，右孩子在后
+	 * 
+	 * @param root
+	 */
+	public void PreorderTraversal(BinaryTreeNode root) {
+		if (root == null)
+			return;
+		Stack<BinaryTreeNode> treeNodeStack = new Stack<BinaryTreeNode>();
+		treeNodeStack.push(root);
+		while (!treeNodeStack.isEmpty()) {
+			BinaryTreeNode treeNode = treeNodeStack.pop();
+			System.out.println(treeNode.m_nValue);
+			if (treeNode.m_pRight != null) {
+				treeNodeStack.push(treeNode.m_pRight);
+			}
+			if (treeNode.m_pLeft != null) {
+				treeNodeStack.push(treeNode.m_pLeft);
+			}
+		}
+
+	}
+
+	/**
+	 * 中序遍历 递归解法
+	 * 
+	 * （1）如果二叉树为空，空操作 （2）如果二叉树不为空，中序遍历左子树，访问根节点，中序遍历右子树
+	 */
+	public void InorderTraversalRec(BinaryTreeNode root) {
+		if (root == null)
+			return;
+		InorderTraversalRec(root.m_pLeft);
+		System.out.println(root.m_nValue);
+		InorderTraversalRec(root.m_pRight);
+	}
+
+	/**
+	 * 中序遍历 迭代解法
+	 * 
+	 * 使用Stack模拟
+	 * 
+	 * @param root
+	 */
+	public void InorderTraversal(BinaryTreeNode root) {
+		if (root == null)
+			return;
+		Stack<BinaryTreeNode> treeNodeStack = new Stack<BinaryTreeNode>();
+		treeNodeStack.push(root);
+		
+	}
+	
+	/**
+	 * 后序遍历 递归解法
+	 * 
+	 * （1）如果二叉树为空，空操作 （2）如果二叉树不为空，后序遍历左子树，后序遍历右子树，访问根节点
+	 */
+	public void PostorderTraversalRec(BinaryTreeNode root) {
+		if (root == null)
+			return;
+		PostorderTraversalRec(root.m_pLeft);
+		PostorderTraversalRec(root.m_pRight);
+		System.out.println(root.m_nValue);
+	}
+
 	@Test
 	public void testNode() throws Exception {
 		BinaryTreeNode treeNode12 = new BinaryTreeNode(12, null, null);
@@ -124,11 +206,15 @@ public class TreeNodeExample {
 		BinaryTreeNode treeNode1 = new BinaryTreeNode(1, treeNode3, treeNode4);
 		BinaryTreeNode treeNode0 = new BinaryTreeNode(0, treeNode1, treeNode2); // root结点
 
-		System.out.println(GetNodeNumRec(treeNode0));// 13
-		System.out.println(GetNodeNum(treeNode0));// 13
-		System.out.println(GetDepthRec(treeNode0));// 4
-		System.out.println(GetDepth(treeNode0));// 4
-
+		// System.out.println(GetNodeNumRec(treeNode0));// 13
+		// System.out.println(GetNodeNum(treeNode0));// 13
+		// System.out.println(GetDepthRec(treeNode0));// 4
+		// System.out.println(GetDepth(treeNode0));// 4
+		// PreorderTraversalRec(treeNode0);// 0,1,3,7,8,4,9,10,2,5,11,12,6
+		// PreorderTraversalRec(treeNode0);// 0,1,3,7,8,4,9,10,2,5,11,12,6
+		//InorderTraversalRec(treeNode0);// 7,3,8,1,9,4,10,0,11,5,12,2,6
+		//InorderTraversal(treeNode0);
+		PostorderTraversalRec(treeNode0);//7,8,3,9,10,4,1,11,12,5,6,2,0
 	}
 
 }
