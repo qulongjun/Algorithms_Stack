@@ -416,6 +416,50 @@ public class TreeNodeExample {
 
 		return currentLevel;
 	}
+
+	/**
+	 * 求二叉树中叶子节点的个数（递归）
+	 * 
+	 * @param root
+	 * @return
+	 */
+	public int GetNodeNumLeafRec(BinaryTreeNode root) {
+		if (root == null) // root不存在，返回0
+			return 0;
+		if (root.m_pLeft == null && root.m_pRight == null) { // 递归结束条件：不存在左子树和右子树
+			return 1;
+		}
+		return GetNodeNumLeafRec(root.m_pLeft)
+				+ GetNodeNumLeafRec(root.m_pRight);
+	}
+
+	/**
+	 * 求二叉树中叶子节点的个数（迭代）
+	 * 
+	 * @param root
+	 * @return
+	 */
+	public int GetNodeNumLeaf(BinaryTreeNode root) {
+		if (root == null)
+			return 0;
+		Queue<BinaryTreeNode> binaryTreeNodeQueue = new LinkedList<BinaryTreeNode>();
+		binaryTreeNodeQueue.add(root);
+		int leftNodes = 0;
+		while (!binaryTreeNodeQueue.isEmpty()) {
+			BinaryTreeNode treeNode = binaryTreeNodeQueue.poll();
+			if (treeNode.m_pLeft != null) {
+				binaryTreeNodeQueue.add(treeNode.m_pLeft);
+			}
+			if (treeNode.m_pRight != null) {
+				binaryTreeNodeQueue.add(treeNode.m_pRight);
+			}
+			if (treeNode.m_pLeft == null && treeNode.m_pRight == null) {
+				leftNodes++;
+			}
+		}
+		return leftNodes;
+	}
+	
 	
 	
 
@@ -453,7 +497,9 @@ public class TreeNodeExample {
 		 * System.out.println(treeNode11.m_pLeft.m_nValue);//0
 		 */
 		// System.out.println(GetNodeNumKthLevelRec(treeNode0, 4));
-		System.out.println(GetNodeNumKthLevel(treeNode0, 4));
+		// System.out.println(GetNodeNumKthLevel(treeNode0, 4));
+		//System.out.println(GetNodeNumLeafRec(treeNode0));
+		//System.out.println(GetNodeNumLeaf(treeNode0));
 	}
 }
 
