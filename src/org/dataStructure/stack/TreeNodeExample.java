@@ -459,9 +459,61 @@ public class TreeNodeExample {
 		}
 		return leftNodes;
 	}
-	
-	
-	
+
+	/**
+	 * 判断两棵二叉树是否相同的树(递归解法)
+	 * 
+	 * （1）如果两棵二叉树都为空，返回真 （2）如果两棵二叉树一棵为空，另一棵不为空，返回假
+	 * （3）如果两棵二叉树都不为空，如果对应的左子树和右子树都同构返回真，其他返回假
+	 * 
+	 * @param root1
+	 * @param root2
+	 * @return
+	 */
+	public boolean isSameRec(BinaryTreeNode root1, BinaryTreeNode root2) {
+		if (root1 == null && root2 == null) {
+			return true;
+		} else if (root1 == null || root2 == null) {
+			return false;
+		}
+		if (root1.m_nValue != root2.m_nValue)
+			return false;
+
+		boolean leftSame = isSameRec(root1.m_pLeft, root2.m_pLeft);
+		boolean rightSame = isSameRec(root1.m_pRight, root2.m_pRight);
+		return leftSame && rightSame;
+	}
+
+	public boolean isSame(BinaryTreeNode root1, BinaryTreeNode root2) {
+		if (root1 == null && root2 == null) {
+			return true;
+		} else if (root1 == null || root2 == null) {
+			return false;
+		}
+		Stack<BinaryTreeNode> binaryTreeNodeStack1 = new Stack<BinaryTreeNode>();
+		Stack<BinaryTreeNode> binaryTreeNodeStack2 = new Stack<BinaryTreeNode>();
+		binaryTreeNodeStack1.push(root1);
+		binaryTreeNodeStack2.push(root2);
+		while (!binaryTreeNodeStack1.isEmpty()
+				&& !binaryTreeNodeStack2.isEmpty()) {
+			BinaryTreeNode treeNode1 = binaryTreeNodeStack1.pop();
+			BinaryTreeNode treeNode2 = binaryTreeNodeStack2.pop();
+			if (treeNode1 == null && treeNode2 == null){
+				continue;	
+			}
+			else if (treeNode1 != null && treeNode2 != null
+					&& treeNode1.m_nValue == treeNode2.m_nValue) {
+				binaryTreeNodeStack1.push(treeNode1.m_pRight);
+				binaryTreeNodeStack1.push(treeNode1.m_pLeft);
+				binaryTreeNodeStack2.push(treeNode2.m_pRight);
+				binaryTreeNodeStack2.push(treeNode2.m_pLeft);
+			} else
+				return false;
+
+		}
+		return true;
+
+	}
 
 	@Test
 	public void testNode() throws Exception {
@@ -478,6 +530,26 @@ public class TreeNodeExample {
 		BinaryTreeNode treeNode2 = new BinaryTreeNode(2, treeNode5, treeNode6);
 		BinaryTreeNode treeNode1 = new BinaryTreeNode(1, treeNode3, treeNode4);
 		BinaryTreeNode treeNode0 = new BinaryTreeNode(0, treeNode1, treeNode2); // root结点
+
+		BinaryTreeNode treeNode25 = new BinaryTreeNode(12, null, null);
+		BinaryTreeNode treeNode24 = new BinaryTreeNode(11, null, null);
+		BinaryTreeNode treeNode23 = new BinaryTreeNode(10, null, null);
+		BinaryTreeNode treeNode22 = new BinaryTreeNode(9, null, null);
+		BinaryTreeNode treeNode21 = new BinaryTreeNode(8, null, null);
+		BinaryTreeNode treeNode20 = new BinaryTreeNode(7, null, null);
+		BinaryTreeNode treeNode19 = new BinaryTreeNode(6, null, null);
+		BinaryTreeNode treeNode18 = new BinaryTreeNode(5, treeNode24,
+				treeNode25);
+		BinaryTreeNode treeNode17 = new BinaryTreeNode(4, treeNode22,
+				treeNode23);
+		BinaryTreeNode treeNode16 = new BinaryTreeNode(3, treeNode20,
+				treeNode21);
+		BinaryTreeNode treeNode15 = new BinaryTreeNode(2, treeNode18,
+				treeNode19);
+		BinaryTreeNode treeNode14 = new BinaryTreeNode(1, treeNode16,
+				treeNode17);
+		BinaryTreeNode treeNode13 = new BinaryTreeNode(0, treeNode14,
+				treeNode15); // root结点
 
 		// System.out.println(GetNodeNumRec(treeNode0));// 13
 		// System.out.println(GetNodeNum(treeNode0));// 13
@@ -498,8 +570,11 @@ public class TreeNodeExample {
 		 */
 		// System.out.println(GetNodeNumKthLevelRec(treeNode0, 4));
 		// System.out.println(GetNodeNumKthLevel(treeNode0, 4));
-		//System.out.println(GetNodeNumLeafRec(treeNode0));
-		//System.out.println(GetNodeNumLeaf(treeNode0));
+		// System.out.println(GetNodeNumLeafRec(treeNode0));
+		// System.out.println(GetNodeNumLeaf(treeNode0));
+
+		//System.out.println(isSameRec(treeNode0, treeNode13));
+		//System.out.println(isSame(treeNode0,treeNode13));
 	}
 }
 
