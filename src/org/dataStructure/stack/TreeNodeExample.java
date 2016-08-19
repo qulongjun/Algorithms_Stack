@@ -542,7 +542,11 @@ public class TreeNodeExample {
 	}
 
 	/**
-	 * 求二叉树的镜像
+	 * 求二叉树的镜像 递归实现
+	 * 
+	 * （1）如果二叉树为空，返回空 （2）如果二叉树不为空，求左子树和右子树的镜像，然后交换左子树和右子树
+	 * 
+	 * 破坏原来的树，把原来的树破坏掉
 	 * 
 	 * @return
 	 */
@@ -554,6 +558,25 @@ public class TreeNodeExample {
 		root.m_pLeft = rightTreeNode;
 		root.m_pRight = leftTreeNode;
 		return root;
+	}
+
+	/**
+	 * 求二叉树的镜像 递归实现
+	 * 
+	 * （1）如果二叉树为空，返回空 （2）如果二叉树不为空，求左子树和右子树的镜像，然后交换左子树和右子树
+	 * 
+	 * 不破坏原来的树，把原来的树破坏掉
+	 * 
+	 * @return
+	 */
+	public BinaryTreeNode MirrorCopyRec(BinaryTreeNode root) {
+		if (root == null)
+			return null;
+		
+		BinaryTreeNode leftTreeNode = MirrorRec(root.m_pLeft);
+		BinaryTreeNode rightTreeNode = MirrorRec(root.m_pRight);
+		BinaryTreeNode treeNode = new BinaryTreeNode(root.m_nValue,rightTreeNode,leftTreeNode);
+		return treeNode;
 	}
 
 	@Test
@@ -618,11 +641,13 @@ public class TreeNodeExample {
 		// System.out.println(isSameRec(treeNode0, treeNode13));
 		// System.out.println(isSame(treeNode0,treeNode13));
 
-		//System.out.println(isAVLRec(treeNode0));
-	
-		BinaryTreeNode treeNode =MirrorRec(treeNode0);
+		// System.out.println(isAVLRec(treeNode0));
+
+		/*BinaryTreeNode treeNode = MirrorRec(treeNode0);
+		LevelTraversalRec(treeNode);*/
+		BinaryTreeNode treeNode = MirrorCopyRec(treeNode0);
 		LevelTraversalRec(treeNode);
-		
+
 	}
 }
 
