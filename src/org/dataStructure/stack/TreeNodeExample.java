@@ -484,6 +484,15 @@ public class TreeNodeExample {
 		return leftSame && rightSame;
 	}
 
+	/**
+	 * 判断两棵二叉树是否相同的树(迭代解法)
+	 * 
+	 * 
+	 * 
+	 * @param root1
+	 * @param root2
+	 * @return
+	 */
 	public boolean isSame(BinaryTreeNode root1, BinaryTreeNode root2) {
 		if (root1 == null && root2 == null) {
 			return true;
@@ -498,10 +507,9 @@ public class TreeNodeExample {
 				&& !binaryTreeNodeStack2.isEmpty()) {
 			BinaryTreeNode treeNode1 = binaryTreeNodeStack1.pop();
 			BinaryTreeNode treeNode2 = binaryTreeNodeStack2.pop();
-			if (treeNode1 == null && treeNode2 == null){
-				continue;	
-			}
-			else if (treeNode1 != null && treeNode2 != null
+			if (treeNode1 == null && treeNode2 == null) {
+				continue;
+			} else if (treeNode1 != null && treeNode2 != null
 					&& treeNode1.m_nValue == treeNode2.m_nValue) {
 				binaryTreeNodeStack1.push(treeNode1.m_pRight);
 				binaryTreeNodeStack1.push(treeNode1.m_pLeft);
@@ -515,8 +523,42 @@ public class TreeNodeExample {
 
 	}
 
+	/**
+	 * 判断二叉树是不是平衡二叉树 递归解法：
+	 * 
+	 * （1）如果二叉树为空，返回真 （2）如果二叉树不为空，如果左子树和右子树都是AVL树并且左子树和右子树高度相差不大于1，返回真，其他返回假
+	 * 
+	 * @param root
+	 * @return
+	 */
+	public boolean isAVLRec(BinaryTreeNode root) {
+		if (root == null)
+			return true;
+		// 判断当前结点左子树和右子树高度差是否大于1
+		if (Math.abs(GetDepth(root.m_pLeft) - GetDepth(root.m_pRight)) > 1) {
+			return false;
+		}
+		return isAVLRec(root.m_pLeft) && isAVLRec(root.m_pRight);
+	}
+
+	/**
+	 * 求二叉树的镜像
+	 * 
+	 * @return
+	 */
+	public BinaryTreeNode MirrorRec(BinaryTreeNode root) {
+		if (root == null)
+			return null;
+		BinaryTreeNode leftTreeNode = MirrorRec(root.m_pLeft);
+		BinaryTreeNode rightTreeNode = MirrorRec(root.m_pRight);
+		root.m_pLeft = rightTreeNode;
+		root.m_pRight = leftTreeNode;
+		return root;
+	}
+
 	@Test
 	public void testNode() throws Exception {
+		// 第一个二叉树
 		BinaryTreeNode treeNode12 = new BinaryTreeNode(12, null, null);
 		BinaryTreeNode treeNode11 = new BinaryTreeNode(11, null, null);
 		BinaryTreeNode treeNode10 = new BinaryTreeNode(10, null, null);
@@ -530,7 +572,7 @@ public class TreeNodeExample {
 		BinaryTreeNode treeNode2 = new BinaryTreeNode(2, treeNode5, treeNode6);
 		BinaryTreeNode treeNode1 = new BinaryTreeNode(1, treeNode3, treeNode4);
 		BinaryTreeNode treeNode0 = new BinaryTreeNode(0, treeNode1, treeNode2); // root结点
-
+		// 第二个二叉树
 		BinaryTreeNode treeNode25 = new BinaryTreeNode(12, null, null);
 		BinaryTreeNode treeNode24 = new BinaryTreeNode(11, null, null);
 		BinaryTreeNode treeNode23 = new BinaryTreeNode(10, null, null);
@@ -573,8 +615,14 @@ public class TreeNodeExample {
 		// System.out.println(GetNodeNumLeafRec(treeNode0));
 		// System.out.println(GetNodeNumLeaf(treeNode0));
 
-		//System.out.println(isSameRec(treeNode0, treeNode13));
-		//System.out.println(isSame(treeNode0,treeNode13));
+		// System.out.println(isSameRec(treeNode0, treeNode13));
+		// System.out.println(isSame(treeNode0,treeNode13));
+
+		//System.out.println(isAVLRec(treeNode0));
+	
+		BinaryTreeNode treeNode =MirrorRec(treeNode0);
+		LevelTraversalRec(treeNode);
+		
 	}
 }
 
