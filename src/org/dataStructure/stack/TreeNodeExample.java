@@ -226,10 +226,198 @@ public class TreeNodeExample {
 				binaryTreeNodeStack.push(treeNode.m_pRight);
 			}
 		}
-		while (!outPut.isEmpty()) { //进栈顺序为根>右>左，出栈顺序为左>右>根
+		while (!outPut.isEmpty()) { // 进栈顺序为根>右>左，出栈顺序为左>右>根
 			System.out.println(outPut.pop().m_nValue + " ");
 		}
 	}
+
+	/**
+	 * 层次遍历 递归解法 【很少出现】
+	 * 
+	 * 基本思想是用一个大的ArrayList，里面包含了每一层的ArrayList。 大的ArrayList的size和level有关系
+	 * 
+	 * @param root
+	 */
+	public void LevelTraversalRec(BinaryTreeNode root) {
+		ArrayList<ArrayList<Integer>> ret = new ArrayList<ArrayList<Integer>>();
+		dfs(root, 0, ret);
+		System.out.println(ret);
+	}
+
+	private static void dfs(BinaryTreeNode root, int level,
+			ArrayList<ArrayList<Integer>> ret) {
+		if (root == null)
+			return;
+		if (level >= ret.size()) { // 递归到下一层
+			ret.add(new ArrayList<Integer>());// 新创建一个ArrayList
+		}
+		ret.get(level).add(root.m_nValue);// 当前结点值放入ArrayList
+		dfs(root.m_pLeft, level + 1, ret);
+		dfs(root.m_pRight, level + 1, ret);
+	}
+
+	/**
+	 * 层次遍历 迭代实现
+	 * 
+	 * @param root
+	 */
+	public void LevelTraversal(BinaryTreeNode root) {
+		if (root == null)
+			return;
+		Queue<BinaryTreeNode> binaryTreeNodeQueue = new LinkedList<BinaryTreeNode>();
+		binaryTreeNodeQueue.add(root);
+		while (!binaryTreeNodeQueue.isEmpty()) {
+			BinaryTreeNode treeNode = binaryTreeNodeQueue.poll();
+			System.out.println(treeNode.m_nValue);
+			if (treeNode.m_pLeft != null) {
+				binaryTreeNodeQueue.add(treeNode.m_pLeft);
+			}
+			if (treeNode.m_pRight != null) {
+				binaryTreeNodeQueue.add(treeNode.m_pRight);
+			}
+		}
+	}
+
+	/**
+	 * 将二叉查找树变为有序的双向链表 要求不能创建新节点，只调整指针。【递归实现】
+	 * http://blog.csdn.net/ljianhui/article/details/22338405
+	 * 
+	 * @param root
+	 * @return
+	 */
+	public BinaryTreeNode ConvertBST2DLLRec(BinaryTreeNode root) {
+		root = convertBST2DLLSubRec(root);
+		return root;
+	}
+
+	/**
+	 * 递归转换BST为双向链表(DLL)
+	 * 
+	 * 思想：只需要将根节点左子树的最右叶子结点与根结点相连，右子树的最左叶子结点与根结点相连即可（互相）
+	 * 
+	 * @param root
+	 * @return
+	 */
+	public BinaryTreeNode convertBST2DLLSubRec(BinaryTreeNode root) {
+		if (root == null || root.m_pLeft == null || root.m_pRight == null)
+			return root;
+		BinaryTreeNode treeNode = null;
+		if (root.m_pLeft != null) {
+			treeNode = convertBST2DLLSubRec(root.m_pLeft);
+			while (treeNode.m_pRight != null) {
+				treeNode = treeNode.m_pRight;
+			}
+			treeNode.m_pRight = root;
+			root.m_pLeft = treeNode;
+		}
+		if (root.m_pLeft != null) {
+			treeNode = convertBST2DLLSubRec(root.m_pRight);
+			while (treeNode.m_pLeft != null) {
+				treeNode = treeNode.m_pLeft;
+			}
+			treeNode.m_pLeft = root;
+			root.m_pRight = treeNode;
+		}
+
+		return root;
+
+	}
+
+	/**
+	 * 【思考】 将二叉查找树变为有序的双向链表 要求不能创建新节点，只调整指针。【迭代实现】
+	 * http://blog.csdn.net/ljianhui/article/details/22338405
+	 * 
+	 * @param root
+	 * @return
+	 */
+	public BinaryTreeNode ConvertBST2DLL(BinaryTreeNode root) {
+		if (root == null)
+			return null;
+		Stack<BinaryTreeNode> binaryTreeNodeStack = new Stack<BinaryTreeNode>();
+		BinaryTreeNode curNode = root;// 指向当前处理结点
+		BinaryTreeNode oldNode = null;// 指向上一个处理结点
+		BinaryTreeNode head = null;// 链表头
+
+		while (true) {
+			while (curNode != null) {
+				binaryTreeNodeStack.push(curNode);
+				curNode = curNode.m_pLeft;
+			}
+
+			if (binaryTreeNodeStack.isEmpty()) {
+				break;
+			}
+			curNode = binaryTreeNodeStack.pop();
+			if (oldNode != null) {
+				oldNode.m_pRight = curNode;
+			}
+			if (head == null) {
+				head = curNode;
+			}
+			oldNode = curNode;
+			curNode = curNode.m_pRight;
+		}
+		return head;
+	}
+
+	/**
+	 * 求二叉树第K层的节点个数 递归解法：
+	 * 
+	 * （1）如果二叉树为空或者k<1返回0 （2）如果二叉树不为空并且k==1，返回1
+	 * （3）如果二叉树不为空且k>1，返回root左子树中k-1层的节点个数与root右子树k-1层节点个数之和
+	 * 
+	 * 
+	 * @param root
+	 * @param k
+	 * @return
+	 */
+	public int GetNodeNumKthLevelRec(BinaryTreeNode root, int k) {
+		if (root == null || k < 1)
+			return 0;
+		if (k == 1)
+			return 1;
+		int leftNodeNum = GetNodeNumKthLevelRec(root.m_pLeft, k - 1);
+		int rightNodeNum = GetNodeNumKthLevelRec(root.m_pRight, k - 1);
+		return leftNodeNum + rightNodeNum;
+	}
+
+	/**
+	 * 求二叉树第K层的节点个数 迭代解法：
+	 * 
+	 * @param root
+	 * @param k
+	 * @return
+	 */
+	public int GetNodeNumKthLevel(BinaryTreeNode root, int k) {
+		if (root == null)
+			return 0;
+		Queue<BinaryTreeNode> binaryTreeNodeQueue = new LinkedList<BinaryTreeNode>();
+		binaryTreeNodeQueue.add(root);
+		int i = 1;
+		int currentLevel = 1;
+		int nextLevel = 0;
+		while (!binaryTreeNodeQueue.isEmpty() && i < k) {
+			BinaryTreeNode treeNode = binaryTreeNodeQueue.poll();
+			currentLevel--;
+			if (treeNode.m_pLeft != null) {
+				binaryTreeNodeQueue.add(treeNode.m_pLeft);
+				nextLevel++;
+			}
+			if (treeNode.m_pRight != null) {
+				binaryTreeNodeQueue.add(treeNode.m_pRight);
+				nextLevel++;
+			}
+			if (currentLevel == 0) {
+				currentLevel = nextLevel;
+				nextLevel = 0;
+				i++;
+			}
+		}
+
+		return currentLevel;
+	}
+	
+	
 
 	@Test
 	public void testNode() throws Exception {
@@ -256,9 +444,17 @@ public class TreeNodeExample {
 		// InorderTraversalRec(treeNode0);// 7,3,8,1,9,4,10,0,11,5,12,2,6
 		// InorderTraversal(treeNode0);// 7,3,8,1,9,4,10,0,11,5,12,2,6
 		// PostorderTraversalRec(treeNode0);// 7,8,3,9,10,4,1,11,12,5,6,2,0
-		PostorderTraversal(treeNode0);
+		// PostorderTraversal(treeNode0);
+		// LevelTraversal(treeNode0);
+		// LevelTraversalRec(treeNode0);
+		/*
+		 * System.out.println(ConvertBST2DLLRec(treeNode0).m_nValue); //0
+		 * System.out.println(treeNode10.m_pRight.m_nValue);//0
+		 * System.out.println(treeNode11.m_pLeft.m_nValue);//0
+		 */
+		// System.out.println(GetNodeNumKthLevelRec(treeNode0, 4));
+		System.out.println(GetNodeNumKthLevel(treeNode0, 4));
 	}
-
 }
 
 /**
