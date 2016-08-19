@@ -173,10 +173,22 @@ public class TreeNodeExample {
 		if (root == null)
 			return;
 		Stack<BinaryTreeNode> treeNodeStack = new Stack<BinaryTreeNode>();
-		treeNodeStack.push(root);
-		
+		BinaryTreeNode treeNode = root;
+		while (true) {
+			while (treeNode != null) {// 该循环把所有从根到叶子结点的所有左子树放到了栈中，出栈的时候就会先左叶子结点
+				treeNodeStack.push(treeNode);
+				treeNode = treeNode.m_pLeft;
+			}// 当跳出这个while循环时，treeNode为null，即为叶子结点，则说明它没有左结点，也没有右结点
+			if (treeNodeStack.isEmpty()) {
+				break;
+			}
+			treeNode = treeNodeStack.pop();// 将该结点出栈
+			System.out.println(treeNode.m_nValue);
+			treeNode = treeNode.m_pRight;// 指向右结点进行左结点遍历
+		}
+
 	}
-	
+
 	/**
 	 * 后序遍历 递归解法
 	 * 
@@ -188,6 +200,35 @@ public class TreeNodeExample {
 		PostorderTraversalRec(root.m_pLeft);
 		PostorderTraversalRec(root.m_pRight);
 		System.out.println(root.m_nValue);
+	}
+
+	/**
+	 * 后续遍历 递归解法 binaryTreeNodeStack进栈顺序为根>左>右，出栈顺序为根>右>左(根先出栈，然后将该结点的左右结点入栈)
+	 * 
+	 * outPut用来翻转输出结果，进栈顺序为根>右>左，出栈顺序为左>右>根
+	 * 
+	 * @param root
+	 */
+	public void PostorderTraversal(BinaryTreeNode root) {
+		if (root == null)
+			return;
+		Stack<BinaryTreeNode> binaryTreeNodeStack = new Stack<BinaryTreeNode>();
+		Stack<BinaryTreeNode> outPut = new Stack<BinaryTreeNode>(); // 翻转第一个输出
+		binaryTreeNodeStack.push(root);
+		while (!binaryTreeNodeStack.isEmpty()) {
+			BinaryTreeNode treeNode = binaryTreeNodeStack.pop();// 根节点出栈
+			System.out.println(treeNode.m_nValue);
+			outPut.push(treeNode);
+			if (treeNode.m_pLeft != null) {// 左结点入栈
+				binaryTreeNodeStack.push(treeNode.m_pLeft);
+			}
+			if (treeNode.m_pRight != null) {// 右结点入栈
+				binaryTreeNodeStack.push(treeNode.m_pRight);
+			}
+		}
+		while (!outPut.isEmpty()) { //进栈顺序为根>右>左，出栈顺序为左>右>根
+			System.out.println(outPut.pop().m_nValue + " ");
+		}
 	}
 
 	@Test
@@ -212,9 +253,10 @@ public class TreeNodeExample {
 		// System.out.println(GetDepth(treeNode0));// 4
 		// PreorderTraversalRec(treeNode0);// 0,1,3,7,8,4,9,10,2,5,11,12,6
 		// PreorderTraversalRec(treeNode0);// 0,1,3,7,8,4,9,10,2,5,11,12,6
-		//InorderTraversalRec(treeNode0);// 7,3,8,1,9,4,10,0,11,5,12,2,6
-		//InorderTraversal(treeNode0);
-		PostorderTraversalRec(treeNode0);//7,8,3,9,10,4,1,11,12,5,6,2,0
+		// InorderTraversalRec(treeNode0);// 7,3,8,1,9,4,10,0,11,5,12,2,6
+		// InorderTraversal(treeNode0);// 7,3,8,1,9,4,10,0,11,5,12,2,6
+		// PostorderTraversalRec(treeNode0);// 7,8,3,9,10,4,1,11,12,5,6,2,0
+		PostorderTraversal(treeNode0);
 	}
 
 }
