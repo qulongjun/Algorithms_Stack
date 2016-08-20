@@ -799,6 +799,73 @@ public class TreeNodeExample {
 		return find;
 	}
 
+	/**
+	 * 求二叉树中节点的最大距离 即二叉树中相距最远的两个节点之间的距离，递归解法
+	 * 
+	 * （1）如果二叉树为空，返回0，同时记录左子树和右子树的深度，都为0
+	 * （2）如果二叉树不为空，最大距离要么是左子树中的最大距离，要么是右子树中的最大距离，
+	 * 要么是左子树节点中到根节点的最大距离+右子树节点中到根节点的最大距离，同时记录左子树和右子树节点中到根节点的最大距离。
+	 * 
+	 * 
+	 * 计算一个二叉树的最大距离有两个情况:
+	 * 
+	 * 情况A: 路径经过左子树的最深节点，通过根节点，再到右子树的最深节点。 情况B: 路径不穿过根节点，而是左子树或右子树的最大距离路径，取其大者。
+	 * 只需要计算这两个情况的路径距离，并取其大者，就是该二叉树的最大距离
+	 * 
+	 * @param root
+	 * @return
+	 */
+	public Result GetMaxDistanceRec(BinaryTreeNode root) {
+		if (root == null) {
+			Result empty = new Result(0, -1); // 目的是让调用方 +1 后，把当前的不存在的
+												// (NULL)子树当成最大深度为 0
+			return empty;
+		}
+		Result lResult = GetMaxDistanceRec(root.m_pLeft);
+		Result rResult = GetMaxDistanceRec(root.m_pRight);
+		Result res = new Result();
+		res.maxDepth = Math.max(lResult.maxDepth, rResult.maxDepth) + 1; // 当前最大深度
+		// 取情况A和情况B中较大值
+		res.maxDistance = Math.max(lResult.maxDepth + rResult.maxDepth,
+				Math.max(lResult.maxDistance, rResult.maxDistance));
+		return res;
+	}
+
+	/**
+	 * 由前序遍历序列和中序遍历序列重建二叉树
+	 * 
+	 * @param preOrder
+	 * @param inOrder
+	 * @return
+	 */
+	public BinaryTreeNode RebuildBinaryTreeRec(List<Integer> preOrder,
+			List<Integer> inOrder) {
+
+		BinaryTreeNode root = null;
+		List<Integer> leftPreOrder;
+		List<Integer> rightPreOrder;
+		List<Integer> leftInorder;
+		List<Integer> rightInorder;
+		int inorderPos;
+		int preorderPos;
+		if ((preOrder.size() != 0) && (inOrder.size() != 0)) {
+			// 把preorder的第一个元素作为root
+			root = new BinaryTreeNode(preOrder.get(0));
+			// 知道root节点，所以根据root节点位置，把preorder，inorder分别划分为 root左侧和右侧 的两个子区间
+			inorderPos = inOrder.indexOf(preOrder.get(0)); // inorder序列的分割点
+			leftInorder = inOrder.subList(0, inorderPos);
+			rightInorder = inOrder.subList(inorderPos + 1, inOrder.size());
+			preorderPos = leftInorder.size(); // preorder序列的分割点
+			leftPreOrder = preOrder.subList(1, preorderPos + 1);
+			rightPreOrder = preOrder.subList(preorderPos + 1, preOrder.size());
+			root.m_pLeft = RebuildBinaryTreeRec(leftPreOrder, leftInorder); // root的左子树就是preorder和inorder的左侧区间而形成的树
+			root.m_pRight = RebuildBinaryTreeRec(rightPreOrder, rightInorder); // root的右子树就是preorder和inorder的右侧区间而形成的树
+		}
+		return root;
+	}
+	
+	
+
 	@Test
 	public void testNode() throws Exception {
 		// 第一个二叉树
@@ -886,10 +953,42 @@ public class TreeNodeExample {
 
 		// System.out.println(GetLastCommonParentRec(treeNode0,treeNode5,treeNode6).m_nValue);
 
-		/*System.out.println(GetLastCommonParentRec2(treeNode0, treeNode5,
-				treeNode6).m_nValue);*/
-		System.out.println(GetLastCommonParent(treeNode0, treeNode5,
-				treeNode6).m_nValue);
+		/*
+		 * System.out.println(GetLastCommonParentRec2(treeNode0, treeNode5,
+		 * treeNode6).m_nValue);
+		 */
+		/*
+		 * System.out .println(GetLastCommonParent(treeNode0, treeNode5,
+		 * treeNode6).m_nValue);
+		 */
+		// System.out.println(GetMaxDistanceRec(treeNode0).maxDepth);
+		// System.out.println(GetMaxDistanceRec(treeNode0).maxDistance);
+
+		List<Integer> preOrder = new ArrayList<Integer>();
+		List<Integer> inOrder = new ArrayList<Integer>();
+		preOrder.add(0);
+		preOrder.add(1);
+		preOrder.add(3);
+		preOrder.add(7);
+		preOrder.add(8);
+		preOrder.add(4);
+		preOrder.add(9);
+		preOrder.add(10);
+		preOrder.add(2);
+		preOrder.add(5);
+		preOrder.add(6);
+		inOrder.add(7);
+		inOrder.add(3);
+		inOrder.add(8);
+		inOrder.add(1);
+		inOrder.add(9);
+		inOrder.add(4);
+		inOrder.add(10);
+		inOrder.add(0);
+		inOrder.add(5);
+		inOrder.add(2);
+		inOrder.add(6);
+		LevelTraversalRec(RebuildBinaryTreeRec(preOrder, inOrder));
 
 	}
 }
@@ -916,6 +1015,21 @@ class BinaryTreeNode {
 		this.m_nValue = m_nValue;
 		this.m_pLeft = m_pLeft;
 		this.m_pRight = m_pRight;
+	}
+
+}
+
+class Result {
+	int maxDistance;
+	int maxDepth;
+
+	public Result() {
+		// TODO 自动生成的构造函数存根
+	}
+
+	public Result(int maxDistance, int maxDepth) {
+		this.maxDistance = maxDistance;
+		this.maxDepth = maxDepth;
 	}
 
 }
