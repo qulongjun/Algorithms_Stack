@@ -1,6 +1,7 @@
 package org.dataStructure.stack;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -565,7 +566,7 @@ public class TreeNodeExample {
 	 * 
 	 * （1）如果二叉树为空，返回空 （2）如果二叉树不为空，求左子树和右子树的镜像，然后交换左子树和右子树
 	 * 
-	 *  不能破坏原来的树，返回一个新的镜像树  
+	 * 不能破坏原来的树，返回一个新的镜像树
 	 * 
 	 * @return
 	 */
@@ -595,12 +596,207 @@ public class TreeNodeExample {
 			if (root1 == null || root2 == null)
 				return false;
 		}
-		if (root1.m_nValue != root2.m_nValue) //判断根值是否一样
+		if (root1.m_nValue != root2.m_nValue) // 判断根值是否一样
 			return false;
-		
-		//判断左右子树是否一样
+
+		// 判断左右子树是否一样
 		return isMirrorRec(root1.m_pLeft, root2.m_pRight)
 				&& isMirrorRec(root1.m_pRight, root2.m_pLeft);
+	}
+
+	/**
+	 * 求二叉树的镜像 迭代实现
+	 * 
+	 * 
+	 * 破坏原来的树，把原来的树破坏掉
+	 * 
+	 * @return
+	 */
+	public void mirror(BinaryTreeNode root) {
+		if (root == null)
+			return;
+		Stack<BinaryTreeNode> binaryTreeNodeStack = new Stack<BinaryTreeNode>();
+		binaryTreeNodeStack.push(root);
+		while (!binaryTreeNodeStack.isEmpty()) {
+			BinaryTreeNode treeNode = binaryTreeNodeStack.pop();
+			BinaryTreeNode temp = treeNode.m_pLeft;
+			treeNode.m_pLeft = treeNode.m_pRight;
+			treeNode.m_pRight = temp;
+			if (treeNode.m_pRight != null) {
+				binaryTreeNodeStack.push(treeNode.m_pRight);
+			}
+			if (treeNode.m_pLeft != null) {
+				binaryTreeNodeStack.push(treeNode.m_pLeft);
+			}
+		}
+	}
+
+	/**
+	 * 求二叉树的镜像 迭代实现
+	 * 
+	 * 不能破坏原来的树，返回一个新的镜像树
+	 * 
+	 * @param root
+	 * @return
+	 */
+	public BinaryTreeNode MirrorCopy(BinaryTreeNode root) {
+		if (root == null)
+			return null;
+		Stack<BinaryTreeNode> binaryTreeNodeStack = new Stack<BinaryTreeNode>();
+		Stack<BinaryTreeNode> newStack = new Stack<BinaryTreeNode>();
+		binaryTreeNodeStack.push(root);
+		BinaryTreeNode newRoot = new BinaryTreeNode(root.m_nValue);
+		newStack.push(newRoot);
+		while (!binaryTreeNodeStack.isEmpty()) {
+			BinaryTreeNode treeNode = binaryTreeNodeStack.pop(); // 根先出栈
+			BinaryTreeNode newTreeNode = newStack.pop();
+			if (treeNode.m_pRight != null) { // 右子树出栈
+				binaryTreeNodeStack.push(treeNode.m_pRight);
+				newTreeNode.m_pLeft = new BinaryTreeNode(
+						treeNode.m_pRight.m_nValue);
+				newStack.push(newTreeNode.m_pLeft);
+
+			}
+			if (treeNode.m_pLeft != null) {// 左子树出栈
+				binaryTreeNodeStack.push(treeNode.m_pLeft);
+				newTreeNode.m_pRight = new BinaryTreeNode(
+						treeNode.m_pLeft.m_nValue);
+				newStack.push(newTreeNode.m_pRight);
+
+			}
+		}
+		return newRoot;
+	}
+
+	/**
+	 * 求二叉树中两个节点的最低公共祖先节点 递归解法
+	 * 
+	 * （1）如果两个节点分别在根节点的左子树和右子树，则返回根节点
+	 * （2）如果两个节点都在左子树，则递归处理左子树；如果两个节点都在右子树，则递归处理右子树
+	 * 
+	 * 
+	 * @param root
+	 * @param n1
+	 * @param n2
+	 * @return
+	 */
+	public BinaryTreeNode GetLastCommonParentRec(BinaryTreeNode root,
+			BinaryTreeNode n1, BinaryTreeNode n2) {
+		if (findNodeRec(root.m_pLeft, n1)) {
+			if (findNodeRec(root.m_pRight, n2)) {
+				return root;
+			} else {
+				return GetLastCommonParentRec(root.m_pLeft, n1, n2);
+			}
+		} else {
+			if (findNodeRec(root.m_pLeft, n2)) {
+				return root;
+			} else {
+				return GetLastCommonParentRec(root.m_pRight, n1, n2);
+			}
+		}
+	}
+
+	/**
+	 * 辅助方法，判断一个点是否在树里
+	 * 
+	 * 若root为null或者treeNode为null，则直接返回false
+	 * 
+	 * @param root
+	 * @param treeNode
+	 * @return
+	 */
+	private boolean findNodeRec(BinaryTreeNode root, BinaryTreeNode treeNode) {
+		if (root == null || treeNode == null)
+			return false;
+		if (root == treeNode) // 递归结束条件，root和treeNode相等
+			return true;
+		// 递归查找左子树中和右子树中是否有该值
+		return findNodeRec(root.m_pLeft, treeNode)
+				|| findNodeRec(root.m_pRight, treeNode);
+	}
+
+	public BinaryTreeNode GetLastCommonParentRec2(BinaryTreeNode root,
+			BinaryTreeNode n1, BinaryTreeNode n2) {
+		if (root == null)
+			return null;
+		if (root == n1 || root == n2) { // 用来结束递归，判断当前结点是否和n1或者和n2一样
+			return root;
+		}
+		BinaryTreeNode leftTreeNode = GetLastCommonParentRec2(root.m_pLeft, n1,
+				n2);// 从左子树中找n1或者n2结点
+		BinaryTreeNode rightTreeNode = GetLastCommonParentRec2(root.m_pRight,
+				n1, n2);// 从右子树中找N1或者N2
+		if (leftTreeNode != null && rightTreeNode != null) {
+			// 左子树和右子树各有一个，则说明公共根结点为root
+			return root;
+		}
+		if (leftTreeNode != null)// 如果右子树为空，则说明在左子树
+			return leftTreeNode;
+		return rightTreeNode;
+	}
+
+	/**
+	 * 求二叉树中两个节点的最低公共祖先节点 迭代解法
+	 * 
+	 * 先求从根节点到两个节点的路径，然后再比较对应路径的节点就行，最后一个相同的节点也就是他们在二叉树中的最低公共祖先节点
+	 * 
+	 * @param root
+	 * @param n1
+	 * @param n2
+	 * @return
+	 */
+	public BinaryTreeNode GetLastCommonParent(BinaryTreeNode root,
+			BinaryTreeNode n1, BinaryTreeNode n2) {
+		if (root == null)
+			return null;
+		ArrayList<BinaryTreeNode> n1List = new ArrayList<BinaryTreeNode>();
+		boolean n1Path = getNodePath(root, n1, n1List);
+		ArrayList<BinaryTreeNode> n2List = new ArrayList<BinaryTreeNode>();
+		boolean n2Path = getNodePath(root, n2, n2List);
+
+		BinaryTreeNode last = null;
+		if (!n1Path || !n2Path)
+			return null;
+		Iterator<BinaryTreeNode> node_it1 = n1List.iterator();
+		Iterator<BinaryTreeNode> node_it2 = n2List.iterator();
+		while (node_it1.hasNext() && node_it2.hasNext()) {
+			BinaryTreeNode treeNode_1 = node_it1.next();
+			BinaryTreeNode treeNode_2 = node_it2.next();
+			if (treeNode_1 == treeNode_2) {
+				last = treeNode_1;
+			} else {
+				break;
+			}
+		}
+
+		return last;
+	}
+
+	/**
+	 * 从根节点到node结点路径上所有的结点都添加到path路径中
+	 * 
+	 * @param root
+	 * @param node
+	 * @param nodeList
+	 * @return
+	 */
+	private boolean getNodePath(BinaryTreeNode root, BinaryTreeNode node,
+			ArrayList<BinaryTreeNode> path) {
+		if (root == null)
+			return false;
+		path.add(root); // 把这个节点加到路径中
+		if (root == node) {
+			return true;
+		}
+		boolean find = getNodePath(root.m_pLeft, node, path);// 先在左子树中找
+		if (!find) { // 如果没找到，再在右子树找
+			find = getNodePath(root.m_pRight, node, path);
+		}
+		if (!find) { // 如果实在没找到证明这个节点不在路径中，说明刚才添加进去的不是路径上的节点，删掉！
+			path.remove(root);
+		}
+		return find;
 	}
 
 	@Test
@@ -671,11 +867,29 @@ public class TreeNodeExample {
 		 * BinaryTreeNode treeNode = MirrorRec(treeNode0);
 		 * LevelTraversalRec(treeNode);
 		 */
-		
-		/*BinaryTreeNode treeNode = MirrorCopyRec(treeNode0);
-		LevelTraversalRec(treeNode);*/
-		
-		System.out.println(isMirrorRec(treeNode0,MirrorRec(treeNode13)));
+
+		/*
+		 * BinaryTreeNode treeNode = MirrorCopyRec(treeNode0);
+		 * LevelTraversalRec(treeNode);
+		 */
+
+		// System.out.println(isMirrorRec(treeNode0, MirrorRec(treeNode13)));
+
+		/*
+		 * mirror(treeNode0); LevelTraversalRec(treeNode0);
+		 */
+
+		/*
+		 * LevelTraversalRec(treeNode0); BinaryTreeNode treeNode =
+		 * MirrorCopy(treeNode0); LevelTraversalRec(treeNode);
+		 */
+
+		// System.out.println(GetLastCommonParentRec(treeNode0,treeNode5,treeNode6).m_nValue);
+
+		/*System.out.println(GetLastCommonParentRec2(treeNode0, treeNode5,
+				treeNode6).m_nValue);*/
+		System.out.println(GetLastCommonParent(treeNode0, treeNode5,
+				treeNode6).m_nValue);
 
 	}
 }
