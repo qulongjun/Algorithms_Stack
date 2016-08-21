@@ -280,12 +280,36 @@ public class ChainLinkedExample {
 		Node mergedNode = null;
 		if (head1.m_value < head2.m_value) {
 			mergedNode = head1;
-			mergedNode.m_next =MergeSortedListRec(head1.m_next, head2);
+			mergedNode.m_next = MergeSortedListRec(head1.m_next, head2);
 		} else {
 			mergedNode = head2;
-			mergedNode.m_next= MergeSortedListRec(head1, head2.m_next);
+			mergedNode.m_next = MergeSortedListRec(head1, head2.m_next);
 		}
 		return mergedNode;
+	}
+
+	/**
+	 * 判断一个单链表中是否有环
+	 * 这里也是用到两个指针。如果一个链表中有环，也就是说用一个指针去遍历，是永远走不到头的。因此，我们可以用两个指针去遍历，一个指针一次走两步
+	 * ，一个指针一次走一步，如果有环，两个指针肯定会在环中相遇。时间复杂度为O（n）
+	 * 
+	 * @param head
+	 * @return
+	 */
+	public boolean HasCycle(Node head) {
+		Node p1 = head;
+		Node p2 = head;
+		while (p1.m_next != null) {
+			p1 = p1.m_next;
+			p2 = p2.m_next;
+			if (p1.m_next != null) {
+				p1 = p1.m_next;
+			}
+			if (p1 == p2) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Test
@@ -322,7 +346,8 @@ public class ChainLinkedExample {
 		// System.out.println(GetMiddleNode(node1).m_value);
 		// ReversePrintListStack(node1);
 		// ReversePrintListRec(node1);
-		printNode(MergeSortedListRec(node1, node11));
+		//printNode(MergeSortedListRec(node1, node11));
+		System.out.println(HasCycle(node1));
 	}
 }
 
