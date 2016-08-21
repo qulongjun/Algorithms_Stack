@@ -128,6 +128,28 @@ public class ChainLinkedExample {
 		return lastNode;
 	}
 
+	/**
+	 * 查找单链表中倒数第K的结点 递归实现
+	 * 
+	 * 通过递归走到最末尾的结点，然后依次退出结点
+	 * 
+	 * @param head
+	 * @param k
+	 * @return
+	 */
+	int level = 0;
+
+	public void ReGetKthNodeRec(Node head, int k) {
+		if (head == null || k == 0) {
+			return;
+		}
+		ReGetKthNodeRec(head.m_next, k);
+		level++;
+		if (level == k) {
+			System.out.println(head.m_value);
+		}
+	}
+
 	@Test
 	public void testNode() throws Exception {
 		Node node10 = new Node(10, null);
@@ -144,7 +166,9 @@ public class ChainLinkedExample {
 		// printNode(ReverseList(node1));
 		// printNode(ReverseListRec(node1));
 		// System.out.println(ReGetKthNode(node1, 5).m_value);
-		System.out.println(ReGetKthNode2(node1, 4).m_value);
+		//System.out.println(ReGetKthNode2(node1, 4).m_value);
+		
+		ReGetKthNodeRec(node1,4);
 	}
 }
 
