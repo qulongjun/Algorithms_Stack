@@ -392,6 +392,68 @@ public class ChainLinkedExample {
 
 	}
 
+	/**
+	 * 求进入环中的第一个节点 用快慢指针做
+	 * 
+	 * @param head
+	 * @return
+	 */
+	public Node GetFirstNodeInCycle(Node head) {
+		Node fast = head;
+		Node slow = head;
+		// 1） 找到快慢指针相遇点
+		while (fast != null && fast.m_next != null) {
+			fast = fast.m_next.m_next;
+			slow = slow.m_next;
+		}
+		// 判断有没有环
+		if (fast == null || slow == null) {
+			return null;
+		}
+		// 2）现在，相遇点离环的开始处的距离等于链表头到环开始处的距离，
+		// 这样，我们把慢指针放在链表头，快指针保持在相遇点，然后
+		// 同速度前进，再次相遇点就是环的开始处！
+		slow = head;
+		while (slow != fast) {
+			slow = slow.m_next;
+			fast = fast.m_next;
+		}
+		// 再次相遇点就是环的开始处
+		return fast;
+
+	}
+
+	/**
+	 * 给出一单链表头指针head和一节点指针toBeDeleted，O(1)时间复杂度删除节点tBeDeleted
+	 * 
+	 * 对于删除节点，我们普通的思路就是让该节点的前一个节点指向该节点的下一个节点
+	 * ，这种情况需要遍历找到该节点的前一个节点，时间复杂度为O(n)。对于链表，
+	 * 链表中的每个节点结构都是一样的，所以我们可以把该节点的下一个节点的数据复制到该节点
+	 * ，然后删除下一个节点即可。要注意最后一个节点的情况，这个时候只能用常见的方法来操作，先找到前一个节点，但总体的平均时间复杂度还是O(1)
+	 * 
+	 * @param head
+	 * @param toDelete
+	 */
+	public void Delete(Node head, Node toDelete) {
+		if (toDelete == null) {
+			return;
+		}
+		if (toDelete.m_next != null) { // 要删除的是一个中间节点
+			toDelete.m_value = toDelete.m_next.m_value; // 将下一个节点的数据复制到本节点!
+			toDelete.m_next = toDelete.m_next.m_next;
+		} else { // 要删除的是最后一个节点！
+			if (head == toDelete) { // 链表中只有一个节点的情况
+				head = null;
+			} else {//要删除尾结点
+				Node node = head;
+				while (node.m_next != toDelete) { // 找到倒数第二个节点
+					node = node.m_next;
+				}
+				node.m_next = null;
+			}
+		}
+	}
+
 	@Test
 	public void testNode() throws Exception {
 		Node node10 = new Node(10, null);
@@ -428,8 +490,11 @@ public class ChainLinkedExample {
 		// ReversePrintListRec(node1);
 		// printNode(MergeSortedListRec(node1, node11));
 		// System.out.println(HasCycle(node1));
-		//System.out.println(IsIntersect(node1, node11));
-		System.out.println(GetFirstCommonNode(node1,node5).m_value);
+		// System.out.println(IsIntersect(node1, node11));
+		// System.out.println(GetFirstCommonNode(node1, node5).m_value);
+		//System.out.println(GetFirstNodeInCycle(node1));
+		Delete(node1,node5);
+		printNode(node1);
 	}
 }
 
