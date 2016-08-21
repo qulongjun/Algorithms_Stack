@@ -312,6 +312,86 @@ public class ChainLinkedExample {
 		return false;
 	}
 
+	/**
+	 * 判断两个单链表是否相交
+	 * 
+	 * 如果两个链表相交于某一节点，那么在这个相交节点之后的所有节点都是两个链表所共有的。 也就是说，如果两个链表相交，那么最后一个节点肯定是共有的
+	 * 先遍历第一个链表，记住最后一个节点，然后遍历第二个链表， 到最后一个节点时和第一个链表的最后一个节点做比较，如果相同，则相交，
+	 * 否则不相交。时间复杂度为O(len1+len2)，因为只需要一个额外指针保存最后一个节点地址， 空间复杂度为O(1)
+	 * 
+	 * @param head1
+	 * @param head2
+	 * @return
+	 */
+	public boolean IsIntersect(Node head1, Node head2) {
+		if (head1 == null || head2 == null)
+			return false;
+		Node finalNode = head1;
+		while (finalNode.m_next != null) {
+			finalNode = finalNode.m_next;
+		}
+		Node finalNode2 = head2;
+		while (finalNode2.m_next != null) {
+			finalNode2 = finalNode2.m_next;
+		}
+		return finalNode == finalNode2;
+	}
+
+	/**
+	 * 求两个单链表相交的第一个节点
+	 * 
+	 * 对第一个链表遍历，计算长度len1，同时保存最后一个节点的地址。
+	 * 对第二个链表遍历，计算长度len2，同时检查最后一个节点是否和第一个链表的最后一个节点相同，若不相同，不相交，结束。
+	 * 
+	 * 两个链表均从头节点开始，假设len1大于len2,
+	 * 那么将第一个链表先遍历len1-len2个节点，此时两个链表当前节点到第一个相交节点的距离就相等了，然后一起向后遍历，直到两个节点的地址相同。
+	 * 时间复杂度，O(len1+len2)
+	 * 
+	 * @param head1
+	 * @param head2
+	 * @return
+	 */
+	public Node GetFirstCommonNode(Node head1, Node head2) {
+		if (head1 == null || head2 == null)
+			return null;
+		Node finalNode = head1;
+		int head1_len = 1;
+		while (finalNode.m_next != null) {
+			finalNode = finalNode.m_next;
+			head1_len++;
+		}
+		Node finalNode2 = head2;
+		int head2_len = 1;
+		while (finalNode2.m_next != null) {
+			finalNode2 = finalNode2.m_next;
+			head2_len++;
+		}
+		if (finalNode != finalNode2) {
+			return null;
+		}
+		Node curNode1 = head1;
+		Node curNode2 = head2;
+		if (head1_len > head2_len) {
+			int len = head1_len - head2_len;
+			while (len != 0) {
+				curNode1 = curNode1.m_next;
+				len--;
+			}
+		} else {
+			int len = head2_len - head1_len;
+			while (len != 0) {
+				curNode2 = curNode2.m_next;
+				len--;
+			}
+		}
+		while (curNode1 != curNode2) {
+			curNode1 = curNode1.m_next;
+			curNode2 = curNode2.m_next;
+		}
+		return curNode1;
+
+	}
+
 	@Test
 	public void testNode() throws Exception {
 		Node node10 = new Node(10, null);
@@ -346,8 +426,10 @@ public class ChainLinkedExample {
 		// System.out.println(GetMiddleNode(node1).m_value);
 		// ReversePrintListStack(node1);
 		// ReversePrintListRec(node1);
-		//printNode(MergeSortedListRec(node1, node11));
-		System.out.println(HasCycle(node1));
+		// printNode(MergeSortedListRec(node1, node11));
+		// System.out.println(HasCycle(node1));
+		//System.out.println(IsIntersect(node1, node11));
+		System.out.println(GetFirstCommonNode(node1,node5).m_value);
 	}
 }
 
